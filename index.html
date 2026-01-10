@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AR3ṅS | Universal Flasher</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <script src="https://unpkg.com/avrgirl-arduino@latest/dist/avrgirl-arduino-global.js"></script>
+  </head>
+  <body>
+    <div class="app-background">
+      <div class="glass-card">
+        <header>
+          <div class="status-dot"></div>
+          <h1>AR3S <span class="highlight">PRIME</span></h1>
+        </header>
+        
+        <div class="control-group">
+          <label>Target Board</label>
+          <div class="select-wrapper">
+            <select id="boardSelect">
+              <option value="uno">Arduino Uno</option>
+              <option value="mega">Arduino Mega</option>
+              <option value="nano">Arduino Nano</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label>Firmware (.hex)</label>
+          <label class="file-upload-btn">
+            <input type="file" id="fileInput">
+            <span id="fileName">📂 Click to Select Firmware</span>
+          </label>
+        </div>
+
+        <button id="flashBtn" disabled>⚡ Connect & Flash</button>
+
+        <div class="console-window">
+          <div class="console-header">AR3S Terminal</div>
+          <div id="consoleOutput" class="console-body">System Ready. Waiting for connection...</div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
