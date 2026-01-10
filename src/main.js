@@ -1,43 +1,115 @@
-import './style.css'; 
-// NOTE: We do NOT import avrgirl here anymore because we loaded it in HTML!
+const AWS_IP = "http://18.61.231.184:3000"; // Hyderabad Server
+
+import './style.css';
+
+require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }});
+
+require(['vs/editor/editor.main'], function () {
+    window.editor = monaco.editor.create(document.getElementById('editorContainer'), {
+        value: `void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(1000);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(1000);
+}`,
+        language: 'cpp',
+        theme: 'vs-dark',
+        automaticLayout: true
+    });
+});
 
 const log = (msg) => {
   const c = document.getElementById('consoleOutput');
   if(c) { c.innerText += '\n' + msg; c.scrollTop = c.scrollHeight; }
 };
 
-let firmware = null;
-const fileInput = document.getElementById('fileInput');
+// --- BUTTON LOGIC ---
 
-if (fileInput) {
-    fileInput.addEventListener('change', (e) => {
-      firmware = e.target.files[0];
-      if(firmware) {
-        document.getElementById('fileName').innerText = "✅ " + firmware.name;
-        document.getElementById('flashBtn').disabled = false;
-      }
-    });
-}
+// 1. HOME BUTTON
+document.getElementById('homeBtn').addEventListener('click', () => {
+    document.getElementById('idePage').style.display = 'none';
+    document.getElementById('landingPage').style.display = 'flex';
+});
 
-const flashBtn = document.getElementById('flashBtn');
-if (flashBtn) {
-    flashBtn.addEventListener('click', () => {
-      log("🚀 Initializing connection...");
-      
-      const boardType = document.getElementById('boardSelect').value;
-      
-      // We use 'window.Avrgirl' because it comes from the internet script
-      const avrgirl = new window.Avrgirl({
+// 2. VERIFY (Compile)
+document.getElementById('verifyBtn').addEventListener('click', async () => {
+    if (!window.editor) return;
+    
+    // Get the Code & Board info
+    const sketchCode = window.editor.getValue();
+    const selectedBoard = document.getElementById('boardSelect').value;
+    
+    log("⏳ Sending to AWS Cloud...");
+
+    try {
+        // Send to Hyderabad Server
+        const response = await fetch(`${AWS_IP}/compile`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                sketch: sketchCode, 
+                board: selectedBoard 
+            })
+        });
+
+        const data = await response.json();
+
+        // Handle the Result
+        if (data.success) {
+            log("✅ Compilation Successful!");
+            log("ℹ️ Server returned a fresh .HEX file.");
+            
+            // Enable Download/Upload buttons
+            document.getElementById('uploadBtn').disabled = false;
+            document.getElementById('downloadHexBtn').disabled = false;
+            
+            // Save the hex data
+            window.latestHex = data.hex; 
+        } else {
+            log("❌ Error: " + data.output);
+        }
+
+    } catch (err) {
+        log("❌ Connection Failed! Is the AWS server running?");
+        console.error(err);
+    }
+});
+
+// 3. DOWNLOAD HEX (New Feature)
+document.getElementById('downloadHexBtn').addEventListener('click', () => {
+    log("💾 Downloading .hex file...");
+    
+    // Mock Hex Data (This is just dummy data for simulation)
+    const mockHex = ":100000000C945C000C946E000C946E000C946E0061"; 
+    
+    // Create a Blob (File) from the text
+    const blob = new Blob([mockHex], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    
+    // Create a hidden link and click it
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "firmware.hex"; // The file name
+    a.click();
+    
+    window.URL.revokeObjectURL(url);
+    log("✅ Download Complete!");
+});
+
+// 4. UPLOAD (Flash)
+document.getElementById('uploadBtn').addEventListener('click', () => {
+    log("⚡ Searching for Board...");
+    const boardType = document.getElementById('boardSelect').value;
+    
+    const avrgirl = new window.Avrgirl({
         board: boardType, 
         debug: true
-      });
-
-      avrgirl.flash(firmware, (err) => {
-        if (err) {
-          log("❌ Error: " + err);
-        } else {
-          log("✅ SUCCESS! Board Flashed.");
-        }
-      });
     });
-}
+    
+    log("⚠️ Waiting for board connection...");
+});

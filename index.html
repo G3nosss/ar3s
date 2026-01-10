@@ -3,45 +3,107 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AR3ṅS | Universal Flasher</title>
+    <title>AR3S | Cloud Platform</title>
     <link rel="stylesheet" href="/src/style.css" />
     <script src="https://unpkg.com/avrgirl-arduino@latest/dist/avrgirl-arduino-global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
   </head>
   <body>
-    <div class="app-background">
-      <div class="glass-card">
-        <header>
-          <div class="status-dot"></div>
-          <h1>AR3S <span class="highlight">PRIME</span></h1>
-        </header>
-        
-        <div class="control-group">
-          <label>Target Board</label>
-          <div class="select-wrapper">
-            <select id="boardSelect">
-              <option value="uno">Arduino Uno</option>
-              <option value="mega">Arduino Mega</option>
-              <option value="nano">Arduino Nano</option>
-            </select>
-          </div>
+    
+    <div id="landingPage" class="landing-container">
+      <header class="main-header">
+        <h1>AR3S <span class="highlight">IDE v.2</span></h1>
+        <p>Advanced Cloud Development Ecosystem</p>
+      </header>
+
+      <div class="cards-grid">
+        <div class="glass-card" onclick="openIDE()">
+          <div class="icon">💻</div>
+          <h2>Cloud IDE</h2>
+          <p>Write C++, Compile in Cloud, and Download Hex.</p>
         </div>
 
-        <div class="control-group">
-          <label>Firmware (.hex)</label>
-          <label class="file-upload-btn">
-            <input type="file" id="fileInput">
-            <span id="fileName">📂 Click to Select Firmware</span>
-          </label>
+        <div class="glass-card" onclick="openFlasher('esp')">
+          <div class="icon">📡</div>
+          <h2>ESP Flash</h2>
+          <p>Flash firmware to ESP32 & ESP8266 via WebSerial.</p>
         </div>
 
-        <button id="flashBtn" disabled>⚡ Connect & Flash</button>
-
-        <div class="console-window">
-          <div class="console-header">AR3S Terminal</div>
-          <div id="consoleOutput" class="console-body">System Ready. Waiting for connection...</div>
+        <div class="glass-card" onclick="openFlasher('stm')">
+          <div class="icon">⚡</div>
+          <h2>STM Flash</h2>
+          <p>Dedicated tools for STM32 ARM Cortex boards.</p>
         </div>
       </div>
     </div>
+
+    <div id="idePage" class="ide-wrapper" style="display: none;">
+      <nav class="toolbar">
+        <button id="homeBtn" class="nav-btn">🏠 Home</button>
+        <div class="divider"></div>
+        
+        <div class="tool-group">
+          <button id="verifyBtn" title="Verify / Compile">
+            <span class="icon-check">✔</span> Verify
+          </button>
+          <button id="downloadHexBtn" title="Download Firmware" disabled>
+            <span class="icon-down">⬇</span> Download .HEX
+          </button>
+          <button id="uploadBtn" title="Upload to Board" disabled>
+            <span class="icon-arrow">➜</span> Upload
+          </button>
+        </div>
+
+        <div class="board-select">
+          <select id="boardSelect">
+  <optgroup label="Stemcorp's original">
+    <option value="mark4">MARK 4</option>
+  </optgroup>
+
+  <optgroup label="Arduino AVR">
+    <option value="uno">Arduino Uno R3</option>
+    <option value="nano">Arduino Nano</option>
+    <option value="mega">Arduino Mega 2560</option>
+  </optgroup>
+
+  <optgroup label="Modern Arduino">
+    <option value="unor4wifi">Arduino Uno R4 WiFi</option>
+    <option value="nanoevery">Arduino Nano Every</option>
+  </optgroup>
+  
+  <optgroup label="Espressif">
+    <option value="nodemcu">NodeMCU (ESP8266)</option>
+    <option value="esp32">ESP32 Dev Module</option>
+  </optgroup>
+
+  <optgroup label="STM32">
+    <option value="bluepill">STM32 Blue Pill</option>
+  </optgroup>
+</select>
+        </div>
+      </nav>
+
+      <div class="ide-container">
+        <div id="editorContainer"></div>
+        <div class="console-panel">
+          <div class="console-header">Output Terminal</div>
+          <div id="consoleOutput" class="console-body">Ready...</div>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
+    <script>
+      // Simple Navigation Logic
+      function openIDE() {
+        document.getElementById('landingPage').style.display = 'none';
+        document.getElementById('idePage').style.display = 'flex';
+        // Trigger editor resize to fit new container
+        if(window.editor) window.editor.layout();
+      }
+      function openFlasher(type) {
+        alert("Coming Soon: " + type.toUpperCase() + " Flasher Module");
+      }
+    </script>
   </body>
 </html>

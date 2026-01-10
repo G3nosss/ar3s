@@ -10,10 +10,5 @@
   },
   "devDependencies": {
     "vite": "^7.2.4"
-  },
-  "dependencies": {
-    "avrgirl-arduino": "^5.0.1",
-    "esptool-js": "^0.5.7",
-    "serialport": "^13.0.0"
-  }
+   }
 }
