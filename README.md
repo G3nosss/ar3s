@@ -77,6 +77,5 @@ If you want to run this project on your own computer:
 ---
 
 ### 📝 Author
-* **AR3S**
-* & 
-* *stemcorp dynamics*
+ **AR3S** & 
+ *stemcorp dynamics*
