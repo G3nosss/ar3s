@@ -1,6 +1,10 @@
+import { Buffer } from 'buffer';
 import Avrgirl from 'avrgirl-arduino';
 
-const API_URL = "http://18.61.231.184:3000"; // Hyderabad Server
+// FIX: Make sure the browser knows what 'Buffer' is
+window.Buffer = Buffer;
+
+const API_URL = "http://18.61.231.184:3000";
 
 import './style.css';
 
