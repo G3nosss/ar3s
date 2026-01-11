@@ -50,7 +50,7 @@ document.getElementById('verifyBtn').addEventListener('click', async () => {
 
     try {
         // Send to Hyderabad Server
-        const response = await fetch(`${AWS_IP}/compile`, {
+        const response = await fetch(`${API_URL}/compile`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
