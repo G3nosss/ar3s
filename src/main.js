@@ -1,3 +1,5 @@
+import Avrgirl from 'avrgirl-arduino';
+
 const AWS_IP = "http://18.61.231.184:3000"; // Hyderabad Server
 
 import './style.css';
@@ -103,13 +105,29 @@ document.getElementById('downloadHexBtn').addEventListener('click', () => {
 
 // 4. UPLOAD (Flash)
 document.getElementById('uploadBtn').addEventListener('click', () => {
-    log("⚡ Searching for Board...");
-    const boardType = document.getElementById('boardSelect').value;
-    
-    const avrgirl = new window.Avrgirl({
-        board: boardType, 
+    if (!window.latestHex) {
+        alert("❌ No compiled code found. Please verify/compile first!");
+        return;
+    }
+
+    const logArea = document.getElementById('output');
+    logArea.textContent += "\n🔌 Searching for Mark 4 Board...";
+
+    const avrgirl = new Avrgirl({
+        board: 'uno', 
         debug: true
     });
-    
+
+    // The hex data is saved in window.latestHex by the compile step
+    const hexData = atob(window.latestHex);
+
+    avrgirl.flash(hexData, (error) => {
+        if (error) {
+            logArea.textContent += "\n❌ Error: " + error;
+        } else {
+            logArea.textContent += "\n✅ Upload Successful! Board is resetting...";
+        }
+    });
+});    
     log("⚠️ Waiting for board connection...");
 });
