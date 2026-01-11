@@ -127,7 +127,6 @@ document.getElementById('uploadBtn').addEventListener('click', () => {
         } else {
             logArea.textContent += "\n✅ Upload Successful! Board is resetting...";
         }
-    });
-});    
+    });    
     log("⚠️ Waiting for board connection...");
 });
