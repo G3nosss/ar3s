@@ -1,6 +1,6 @@
 import Avrgirl from 'avrgirl-arduino';
 
-const AWS_IP = "http://18.61.231.184:3000"; // Hyderabad Server
+const API_URL = "http://18.61.231.184:3000"; // Hyderabad Server
 
 import './style.css';
 
