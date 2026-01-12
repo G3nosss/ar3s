@@ -33,13 +33,6 @@ void loop() {
         language: 'cpp',
         theme: 'vs-dark',
         automaticLayout: true
-    });
-});
-
-const log = (msg) => {
-  const c = document.getElementById('consoleOutput');
-  if(c) { c.innerText += '\n' + msg; c.scrollTop = c.scrollHeight; }
-};
 
 // --- BUTTON LOGIC ---
 
