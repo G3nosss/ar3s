@@ -33,6 +33,7 @@ void loop() {
         language: 'cpp',
         theme: 'vs-dark',
         automaticLayout: true
+});
 
 // --- BUTTON LOGIC ---
 
