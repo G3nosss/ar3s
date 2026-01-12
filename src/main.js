@@ -1,9 +1,9 @@
-// import { Buffer } from 'buffer';
-// import Avrgirl from 'avrgirl-arduino';
+import { Buffer } from 'buffer';
+import Avrgirl from 'avrgirl-arduino';
 
-// window.Buffer = Buffer;
+window.Buffer = Buffer;
 
-const API_URL = "https://3630a38e9068c1d3-18-61-231-184.serveousercontent.com";
+const API_URL = "https://0874d754f449d891-18-61-231-184.serveousercontent.com";
 
 import './style.css';
 
