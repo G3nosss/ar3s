@@ -3,7 +3,15 @@ import Avrgirl from 'avrgirl-arduino';
 
 window.Buffer = Buffer;
 
-const API_URL = "https://0874d754f449d891-18-61-231-184.serveousercontent.com";
+const API_URL = "https://0874d754f449d891-18-61-231-184.serveousercontent.com"; 
+
+function log(message) {
+    const terminal = document.getElementById('terminal-output');
+    if (terminal) {
+        terminal.innerText += "\n" + message;
+        terminal.scrollTop = terminal.scrollHeight;
+    }
+}
 
 import './style.css';
 
@@ -61,6 +69,39 @@ document.getElementById('verifyBtn').addEventListener('click', async () => {
                 board: selectedBoard 
             })
         });
+
+// --- VERIFY LOGIC ---
+async function handleVerify() {
+    log("⌛ Sending to AWS Cloud for verification...");
+
+    // Get the code from the Monaco Editor
+    const sketchCode = window.editor.getValue(); 
+    const selectedBoard = "arduino:avr:uno";
+
+    try {
+        const response = await fetch(`${API_URL}/compile`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                sketch: sketchCode,
+                board: selectedBoard
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            log("✅ Compilation Successful!");
+            log(data.output);
+        } else {
+            log("❌ Compilation Failed!");
+            log(data.error);
+        }
+    } catch (err) {
+        log("❗ Error: Could not reach AWS server. Check your tunnel.");
+        console.error(err);
+    }
+}
 
         const data = await response.json();
 
