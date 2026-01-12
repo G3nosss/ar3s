@@ -3,8 +3,12 @@ import Avrgirl from 'avrgirl-arduino';
 
 window.Buffer = Buffer;
 
-const API_URL = "https://0874d754f449d891-18-61-231-184.serveousercontent.com"; 
+// 1. UPDATE THIS URL with your current Serveo link!
+const API_URL = "https://34bc770a8e7288e3-18-61-231-184.serveousercontent.com"; 
 
+import './style.css';
+
+// --- UTILITY FUNCTIONS ---
 function log(message) {
     const terminal = document.getElementById('terminal-output');
     if (terminal) {
@@ -13,159 +17,98 @@ function log(message) {
     }
 }
 
-import './style.css';
-
+// --- MONACO EDITOR SETUP ---
 require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }});
 
 require(['vs/editor/editor.main'], function () {
     window.editor = monaco.editor.create(document.getElementById('editorContainer'), {
-        value: `void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  Serial.begin(9600);
-}
-
-void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(1000);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(1000);
-}`,
+        value: `void setup() {\n  pinMode(LED_BUILTIN, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  digitalWrite(LED_BUILTIN, HIGH);\n  delay(1000);\n  digitalWrite(LED_BUILTIN, LOW);\n  delay(1000);\n}`,
         language: 'cpp',
         theme: 'vs-dark',
         automaticLayout: true,
-});
-
-// --- BUTTON LOGIC ---
-
-// 1. HOME BUTTON
-document.getElementById('homeBtn').addEventListener('click', () => {
-    document.getElementById('idePage').style.display = 'none';
-    document.getElementById('landingPage').style.display = 'flex';
-});
-
-// 2. VERIFY (Compile)
-document.getElementById('verifyBtn').addEventListener('click', async () => {
-    if (!window.editor) return;
-    
-    // Get the Code & Board info
-    const sketchCode = window.editor.getValue();
-    const selectedBoard = document.getElementById('boardSelect').value;
-    
-    log("⏳ Sending to AWS Cloud...");
-
-    try {
-        // Send to Hyderabad Server
-        const response = await fetch(`${API_URL}/compile`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                sketch: sketchCode, 
-                board: selectedBoard 
-            })
-        });
-
-// --- VERIFY LOGIC ---
-async function handleVerify() {
-    log("⌛ Sending to AWS Cloud for verification...");
-
-    // Get the code from the Monaco Editor
-    const sketchCode = window.editor.getValue(); 
-    const selectedBoard = "arduino:avr:uno";
-
-    try {
-        const response = await fetch(`${API_URL}/compile`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                sketch: sketchCode,
-                board: selectedBoard
-            })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            log("✅ Compilation Successful!");
-            log(data.output);
-        } else {
-            log("❌ Compilation Failed!");
-            log(data.error);
-        }
-    } catch (err) {
-        log("❗ Error: Could not reach AWS server. Check your tunnel.");
-        console.error(err);
-    }
-}
-
-        const data = await response.json();
-
-        // Handle the Result
-        if (data.success) {
-            log("✅ Compilation Successful!");
-            log("ℹ️ Server returned a fresh .HEX file.");
-            
-            // Enable Download/Upload buttons
-            document.getElementById('uploadBtn').disabled = false;
-            document.getElementById('downloadHexBtn').disabled = false;
-            
-            // Save the hex data
-            window.latestHex = data.hex; 
-        } else {
-            log("❌ Error: " + data.output);
-        }
-
-    } catch (err) {
-        log("❌ Connection Failed! Is the AWS server running?");
-        console.error(err);
-    }
-});
-
-// 3. DOWNLOAD HEX (New Feature)
-document.getElementById('downloadHexBtn').addEventListener('click', () => {
-    log("💾 Downloading .hex file...");
-    
-    // Mock Hex Data (This is just dummy data for simulation)
-    const mockHex = ":100000000C945C000C946E000C946E000C946E0061"; 
-    
-    // Create a Blob (File) from the text
-    const blob = new Blob([mockHex], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    
-    // Create a hidden link and click it
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = "firmware.hex"; // The file name
-    a.click();
-    
-    window.URL.revokeObjectURL(url);
-    log("✅ Download Complete!");
-});
-
-// 4. UPLOAD (Flash)
-document.getElementById('uploadBtn').addEventListener('click', () => {
-    if (!window.latestHex) {
-        alert("❌ No compiled code found. Please verify/compile first!");
-        return;
-    }
-
-    const logArea = document.getElementById('output');
-    logArea.textContent += "\n🔌 Searching for Mark 4 Board...";
-
-    const avrgirl = new Avrgirl({
-        board: 'uno', 
-        debug: true
     });
 
-    // The hex data is saved in window.latestHex by the compile step
-    const hexData = atob(window.latestHex);
+    // --- BUTTON LOGIC (Inside the Require Block) ---
 
-    avrgirl.flash(hexData, (error) => {
-        if (error) {
-            logArea.textContent += "\n❌ Error: " + error;
-        } else {
-            logArea.textContent += "\n✅ Upload Successful! Board is resetting...";
-        }
-    });    
-    log("⚠️ Waiting for board connection...");
+    // 1. HOME BUTTON
+    document.getElementById('homeBtn').addEventListener('click', () => {
+        document.getElementById('idePage').style.display = 'none';
+        document.getElementById('landingPage').style.display = 'flex';
     });
-});
+
+    // 2. VERIFY / COMPILE FUNCTION
+    async function handleVerify() {
+        if (!window.editor) return;
+        
+        const sketchCode = window.editor.getValue();
+        const selectedBoard = document.getElementById('boardSelect').value;
+        
+        log("⌛ Sending to AWS Cloud for verification...");
+
+        try {
+            const response = await fetch(`${API_URL}/compile`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    sketch: sketchCode, 
+                    board: selectedBoard 
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                log("✅ Compilation Successful!");
+                log(data.output || "Server returned a fresh .HEX file.");
+                
+                document.getElementById('uploadBtn').disabled = false;
+                document.getElementById('downloadHexBtn').disabled = false;
+                window.latestHex = data.hex; 
+            } else {
+                log("❌ Compilation Failed!");
+                log(data.error || data.output);
+            }
+        } catch (err) {
+            log("❌ Connection Failed! Check if your AWS tunnel is open.");
+            console.error(err);
+        }
+    }
+
+    // MAKE FUNCTION GLOBAL (The Bridge)
+    window.handleVerify = handleVerify;
+    document.getElementById('verifyBtn').addEventListener('click', handleVerify);
+
+    // 3. DOWNLOAD HEX
+    document.getElementById('downloadHexBtn').addEventListener('click', () => {
+        if (!window.latestHex) return;
+        log("💾 Downloading .hex file...");
+        const blob = new Blob([atob(window.latestHex)], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "firmware.hex";
+        a.click();
+        log("✅ Download Complete!");
+    });
+
+    // 4. UPLOAD (Flash)
+    document.getElementById('uploadBtn').addEventListener('click', () => {
+        if (!window.latestHex) {
+            alert("❌ No compiled code found. Please verify/compile first!");
+            return;
+        }
+
+        log("🔌 Searching for Board...");
+        const avrgirl = new Avrgirl({ board: 'uno', debug: true });
+        const hexData = atob(window.latestHex);
+
+        avrgirl.flash(hexData, (error) => {
+            if (error) {
+                log("❌ Upload Error: " + error);
+            } else {
+                log("✅ Upload Successful! Board is resetting...");
+            }
+        });    
+    });
+
+}); // End of require block
