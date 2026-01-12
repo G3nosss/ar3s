@@ -32,7 +32,7 @@ void loop() {
 }`,
         language: 'cpp',
         theme: 'vs-dark',
-        automaticLayout: true
+        automaticLayout: true,
 });
 
 // --- BUTTON LOGIC ---
