@@ -167,4 +167,5 @@ document.getElementById('uploadBtn').addEventListener('click', () => {
         }
     });    
     log("⚠️ Waiting for board connection...");
+    });
 });
