@@ -45,7 +45,15 @@
         <div class="tool-group">
           <button id="verifyBtn" title="Verify / Compile" onclick="handleVerify()">
             <span class="icon-check">✔</span> Verify
-          </button>
+          </button> 
+          <div class="toolbar">
+    <button id="compileBtn">Compile</button>
+    
+    <button id="connectBtn" style="background-color: #f39c12; color: white;">Connect Board</button>
+    <button id="uploadBtn" id="uploadBtn" style="background-color: #27ae60; color: white;" disabled>Upload to Arduino</button>
+    
+    <span id="status" style="margin-left: 10px; font-size: 0.9em; color: #7f8c8d;">Status: Disconnected</span>
+          </div>
           <button id="downloadHexBtn" title="Download Firmware" disabled>
             <span class="icon-down">⬇</span> Download .HEX
           </button>
