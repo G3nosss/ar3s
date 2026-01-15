@@ -4,7 +4,7 @@ import Avrgirl from 'avrgirl-arduino';
 window.Buffer = Buffer;
 
 // 1. PASTE YOUR NEW LINK BELOW!
-const API_URL = "https://0874d754f449d891-18-61-231-184.serveousercontent.com"; 
+const API_URL = "https://ar3s-compiler.duckdns.org"; 
 
 import './style.css';
 
