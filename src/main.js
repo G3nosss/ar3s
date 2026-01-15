@@ -68,3 +68,19 @@ require(['vs/editor/editor.main'], function () {
     });
 
 }); // End of file
+let port;
+
+document.getElementById('connectBtn').addEventListener('click', async () => {
+    try {
+        // 1. Request the port from the user
+        port = await navigator.serial.requestPort();
+        
+        // 2. Open the connection (Baud rate for Uno is usually 115200 for uploads)
+        await port.open({ baudRate: 115200 });
+        
+        document.getElementById('status').innerText = "Status: Connected!";
+        document.getElementById('uploadBtn').disabled = false;
+    } catch (err) {
+        console.error("Connection failed", err);
+    }
+});
