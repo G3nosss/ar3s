@@ -1,5 +1,4 @@
 import { Buffer } from 'buffer';
-import Avrgirl from 'avrgirl-arduino';
 
 window.Buffer = Buffer;
 
