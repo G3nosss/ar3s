@@ -4,12 +4,12 @@ import Avrgirl from 'avrgirl-arduino';
 window.Buffer = Buffer;
 
 // 1. PASTE YOUR NEW LINK BELOW!
-const API_URL = "https://https://0874d754f449d891-18-61-231-184.serveousercontent.com"; 
+const API_URL = "https://0874d754f449d891-18-61-231-184.serveousercontent.com"; 
 
 import './style.css';
 
 function log(message) {
-    const terminal = document.getElementById('terminal-output');
+    const terminal = document.getElementById('output');
     if (terminal) {
         terminal.innerText += "\n" + message;
         terminal.scrollTop = terminal.scrollHeight;
