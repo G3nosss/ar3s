@@ -16,6 +16,33 @@ function log(message) {
     }
 }
 
+// Navigation Logic
+function openIDE() {
+    const landing = document.getElementById('landingPage');
+    const ide = document.getElementById('idePage');
+    if (landing && ide) {
+        landing.style.display = 'none';
+        ide.style.display = 'flex';
+        // Trigger editor resize to fit new container
+        if(window.editor) window.editor.layout();
+    }
+}
+
+function openFlasher(type) {
+    alert("Coming Soon: " + type.toUpperCase() + " Flasher Module");
+}
+
+// Attach listeners for landing page cards
+const ideCard = document.getElementById('ide-card');
+if (ideCard) ideCard.addEventListener('click', openIDE);
+
+const espCard = document.getElementById('esp-card');
+if (espCard) espCard.addEventListener('click', () => openFlasher('esp'));
+
+const stmCard = document.getElementById('stm-card');
+if (stmCard) stmCard.addEventListener('click', () => openFlasher('stm'));
+
+
 require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }});
 
 require(['vs/editor/editor.main'], function () {
@@ -59,8 +86,10 @@ require(['vs/editor/editor.main'], function () {
         }
     }
 
-    // THIS IS THE BRIDGE - DO NOT DELETE
-    window.handleVerify = handleVerify;
+    const verifyBtn = document.getElementById('verifyBtn');
+    if (verifyBtn) {
+        verifyBtn.addEventListener('click', handleVerify);
+    }
 
     document.getElementById('homeBtn').addEventListener('click', () => {
         document.getElementById('idePage').style.display = 'none';
@@ -70,17 +99,20 @@ require(['vs/editor/editor.main'], function () {
 }); // End of file
 let port;
 
-document.getElementById('connectBtn').addEventListener('click', async () => {
-    try {
-        // 1. Request the port from the user
-        port = await navigator.serial.requestPort();
-        
-        // 2. Open the connection (Baud rate for Uno is usually 115200 for uploads)
-        await port.open({ baudRate: 115200 });
-        
-        document.getElementById('status').innerText = "Status: Connected!";
-        document.getElementById('uploadBtn').disabled = false;
-    } catch (err) {
-        console.error("Connection failed", err);
-    }
-});
+const connectBtn = document.getElementById('connectBtn');
+if (connectBtn) {
+    connectBtn.addEventListener('click', async () => {
+        try {
+            // 1. Request the port from the user
+            port = await navigator.serial.requestPort();
+
+            // 2. Open the connection (Baud rate for Uno is usually 115200 for uploads)
+            await port.open({ baudRate: 115200 });
+
+            document.getElementById('status').innerText = "Status: Connected!";
+            document.getElementById('uploadBtn').disabled = false;
+        } catch (err) {
+            console.error("Connection failed", err);
+        }
+    });
+}
