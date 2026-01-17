@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AR3S | Cloud Platform</title>
     <link rel="stylesheet" href="style.css" />
-    <script src="https://unpkg.com/avrgirl-arduino@latest/dist/avrgirl-arduino-global.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
   </head>
   <body>
@@ -17,19 +16,19 @@
       </header>
 
       <div class="cards-grid">
-        <div class="glass-card" onclick="openIDE()">
+        <div id="card-ide" class="glass-card">
           <div class="icon">💻</div>
           <h2>Cloud IDE</h2>
           <p>Write C++, Compile in Cloud, and Download Hex.</p>
         </div>
 
-        <div class="glass-card" onclick="openFlasher('esp')">
+        <div id="card-esp" class="glass-card">
           <div class="icon">📡</div>
           <h2>ESP Flash</h2>
           <p>Flash firmware to ESP32 & ESP8266 via WebSerial.</p>
         </div>
 
-        <div class="glass-card" onclick="openFlasher('stm')">
+        <div id="card-stm" class="glass-card">
           <div class="icon">⚡</div>
           <h2>STM Flash</h2>
           <p>Dedicated tools for STM32 ARM Cortex boards.</p>
@@ -43,21 +42,21 @@
         <div class="divider"></div>
         
         <div class="tool-group">
-          <button id="verifyBtn" title="Verify / Compile" onclick="handleVerify()">
+          <button id="verifyBtn" title="Verify / Compile">
             <span class="icon-check">✔</span> Verify
           </button> 
           <div class="toolbar">
     <button id="compileBtn">Compile</button>
     
     <button id="connectBtn" style="background-color: #f39c12; color: white;">Connect Board</button>
-    <button id="uploadBtn" id="uploadBtn" style="background-color: #27ae60; color: white;" disabled>Upload to Arduino</button>
+    <button id="uploadBtn" style="background-color: #27ae60; color: white;" disabled>Upload to Arduino</button>
     
     <span id="status" style="margin-left: 10px; font-size: 0.9em; color: #7f8c8d;">Status: Disconnected</span>
           </div>
           <button id="downloadHexBtn" title="Download Firmware" disabled>
             <span class="icon-down">⬇</span> Download .HEX
           </button>
-          <button id="uploadBtn" title="Upload to Board" disabled>
+          <button id="uploadBtnIcon" title="Upload to Board" disabled>
             <span class="icon-arrow">➜</span> Upload
           </button>
         </div>
@@ -101,17 +100,5 @@
     </div>
 
     <script type="module" src="/src/main.js"></script>
-    <script>
-      // Simple Navigation Logic
-      function openIDE() {
-        document.getElementById('landingPage').style.display = 'none';
-        document.getElementById('idePage').style.display = 'flex';
-        // Trigger editor resize to fit new container
-        if(window.editor) window.editor.layout();
-      }
-      function openFlasher(type) {
-        alert("Coming Soon: " + type.toUpperCase() + " Flasher Module");
-      }
-    </script>
   </body>
 </html>

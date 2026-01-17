@@ -1,12 +1,27 @@
 import { Buffer } from 'buffer';
-import Avrgirl from 'avrgirl-arduino';
 
 window.Buffer = Buffer;
 
 // 1. PASTE YOUR NEW LINK BELOW!
-const API_URL = "https://ar3s-compiler.duckdns.org"; 
+const API_URL = import.meta.env.VITE_API_URL || "https://ar3s-compiler.duckdns.org";
 
 import './style.css';
+
+// Simple Navigation Logic
+function openIDE() {
+    document.getElementById('landingPage').style.display = 'none';
+    document.getElementById('idePage').style.display = 'flex';
+    // Trigger editor resize to fit new container
+    if(window.editor) window.editor.layout();
+}
+
+function openFlasher(type) {
+    alert("Coming Soon: " + type.toUpperCase() + " Flasher Module");
+}
+
+document.getElementById('card-ide').addEventListener('click', openIDE);
+document.getElementById('card-esp').addEventListener('click', () => openFlasher('esp'));
+document.getElementById('card-stm').addEventListener('click', () => openFlasher('stm'));
 
 function log(message) {
     const terminal = document.getElementById('output');
@@ -59,8 +74,10 @@ require(['vs/editor/editor.main'], function () {
         }
     }
 
-    // THIS IS THE BRIDGE - DO NOT DELETE
-    window.handleVerify = handleVerify;
+    const verifyBtn = document.getElementById('verifyBtn');
+    if (verifyBtn) {
+        verifyBtn.addEventListener('click', handleVerify);
+    }
 
     document.getElementById('homeBtn').addEventListener('click', () => {
         document.getElementById('idePage').style.display = 'none';
