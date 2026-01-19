@@ -3,8 +3,12 @@ import Avrgirl from 'avrgirl-arduino';
 
 window.Buffer = Buffer;
 
-// 1. PASTE YOUR NEW LINK BELOW!
-const API_URL = "https://ar3s-compiler.duckdns.org"; 
+// 1. Configuration (loaded from environment variables)
+const API_URL = import.meta.env.VITE_API_URL || "https://ar3s-compiler.duckdns.org";
+
+if (!import.meta.env.VITE_API_URL) {
+    console.warn("Security Warning: VITE_API_URL is not set in environment variables. Using default fallback.");
+}
 
 import './style.css';
 
