@@ -4,9 +4,32 @@ import Avrgirl from 'avrgirl-arduino';
 window.Buffer = Buffer;
 
 // 1. PASTE YOUR NEW LINK BELOW!
-const API_URL = "https://ar3s-compiler.duckdns.org"; 
+const API_URL = import.meta.env.VITE_API_URL || "https://ar3s-compiler.duckdns.org";
 
 import './style.css';
+
+// Navigation Logic
+function openIDE() {
+    document.getElementById('landingPage').style.display = 'none';
+    document.getElementById('idePage').style.display = 'flex';
+    // Trigger editor resize to fit new container
+    if(window.editor) window.editor.layout();
+}
+
+function openFlasher(type) {
+    alert("Coming Soon: " + type.toUpperCase() + " Flasher Module");
+}
+
+// Event Listeners for Navigation
+const cardIde = document.getElementById('card-ide');
+if (cardIde) {
+    cardIde.addEventListener('click', openIDE);
+} else {
+    console.error("Critical: card-ide not found during initialization");
+}
+
+document.getElementById('card-flasher-esp')?.addEventListener('click', () => openFlasher('esp'));
+document.getElementById('card-flasher-stm')?.addEventListener('click', () => openFlasher('stm'));
 
 function log(message) {
     const terminal = document.getElementById('output');
@@ -61,6 +84,8 @@ require(['vs/editor/editor.main'], function () {
 
     // THIS IS THE BRIDGE - DO NOT DELETE
     window.handleVerify = handleVerify;
+
+    document.getElementById('verifyBtn')?.addEventListener('click', handleVerify);
 
     document.getElementById('homeBtn').addEventListener('click', () => {
         document.getElementById('idePage').style.display = 'none';
