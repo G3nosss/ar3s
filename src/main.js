@@ -18,6 +18,27 @@ function log(message) {
 
 require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }});
 
+// Event Listeners for Navigation (Must be attached immediately)
+document.getElementById('card-ide').addEventListener('click', () => {
+    document.getElementById('landingPage').style.display = 'none';
+    document.getElementById('idePage').style.display = 'flex';
+    // Trigger editor resize to fit new container
+    if (window.editor) window.editor.layout();
+});
+
+document.getElementById('card-flasher-esp').addEventListener('click', () => {
+    alert("Coming Soon: ESP Flasher Module");
+});
+
+document.getElementById('card-flasher-stm').addEventListener('click', () => {
+    alert("Coming Soon: STM Flasher Module");
+});
+
+document.getElementById('homeBtn').addEventListener('click', () => {
+    document.getElementById('idePage').style.display = 'none';
+    document.getElementById('landingPage').style.display = 'flex';
+});
+
 require(['vs/editor/editor.main'], function () {
     window.editor = monaco.editor.create(document.getElementById('editorContainer'), {
         value: `void setup() {\n  pinMode(LED_BUILTIN, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  digitalWrite(LED_BUILTIN, HIGH);\n  delay(1000);\n  digitalWrite(LED_BUILTIN, LOW);\n  delay(1000);\n}`,
@@ -59,13 +80,8 @@ require(['vs/editor/editor.main'], function () {
         }
     }
 
-    // THIS IS THE BRIDGE - DO NOT DELETE
-    window.handleVerify = handleVerify;
-
-    document.getElementById('homeBtn').addEventListener('click', () => {
-        document.getElementById('idePage').style.display = 'none';
-        document.getElementById('landingPage').style.display = 'flex';
-    });
+    // Event Listeners that depend on editor logic
+    document.getElementById('verifyBtn').addEventListener('click', handleVerify);
 
 }); // End of file
 let port;
