@@ -8,6 +8,28 @@ const API_URL = "https://ar3s-compiler.duckdns.org";
 
 import './style.css';
 
+// Navigation Logic
+function openIDE() {
+    document.getElementById('landingPage').style.display = 'none';
+    document.getElementById('idePage').style.display = 'flex';
+    // Trigger editor resize to fit new container
+    if(window.editor) window.editor.layout();
+}
+
+function openFlasher(type) {
+    alert("Coming Soon: " + type.toUpperCase() + " Flasher Module");
+}
+
+// Attach event listeners for navigation cards
+const cardIde = document.getElementById('card-ide');
+if (cardIde) cardIde.addEventListener('click', openIDE);
+
+const cardEsp = document.getElementById('card-flasher-esp');
+if (cardEsp) cardEsp.addEventListener('click', () => openFlasher('esp'));
+
+const cardStm = document.getElementById('card-flasher-stm');
+if (cardStm) cardStm.addEventListener('click', () => openFlasher('stm'));
+
 function log(message) {
     const terminal = document.getElementById('output');
     if (terminal) {
@@ -59,8 +81,11 @@ require(['vs/editor/editor.main'], function () {
         }
     }
 
-    // THIS IS THE BRIDGE - DO NOT DELETE
-    window.handleVerify = handleVerify;
+    // Attach listener for Verify button
+    const verifyBtn = document.getElementById('verifyBtn');
+    if (verifyBtn) {
+        verifyBtn.addEventListener('click', handleVerify);
+    }
 
     document.getElementById('homeBtn').addEventListener('click', () => {
         document.getElementById('idePage').style.display = 'none';
