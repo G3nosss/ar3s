@@ -8,6 +8,31 @@ const API_URL = "https://ar3s-compiler.duckdns.org";
 
 import './style.css';
 
+// --- NAVIGATION LOGIC ---
+const ideCard = document.getElementById('card-ide');
+if (ideCard) {
+    ideCard.addEventListener('click', () => {
+        document.getElementById('landingPage').style.display = 'none';
+        document.getElementById('idePage').style.display = 'flex';
+        // Trigger editor resize to fit new container
+        if (window.editor) window.editor.layout();
+    });
+}
+
+const flashers = {
+    'card-esp': 'ESP',
+    'card-stm': 'STM'
+};
+
+Object.keys(flashers).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+        el.addEventListener('click', () => {
+            alert("Coming Soon: " + flashers[id] + " Flasher Module");
+        });
+    }
+});
+
 function log(message) {
     const terminal = document.getElementById('output');
     if (terminal) {
@@ -59,8 +84,11 @@ require(['vs/editor/editor.main'], function () {
         }
     }
 
-    // THIS IS THE BRIDGE - DO NOT DELETE
-    window.handleVerify = handleVerify;
+    // --- EVENT LISTENERS ---
+    const verifyBtn = document.getElementById('verifyBtn');
+    if (verifyBtn) {
+        verifyBtn.addEventListener('click', handleVerify);
+    }
 
     document.getElementById('homeBtn').addEventListener('click', () => {
         document.getElementById('idePage').style.display = 'none';
